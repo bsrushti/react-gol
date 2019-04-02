@@ -1,7 +1,12 @@
+body {
+  background-color:#B3A8A6 ;
+}
+
 .container {
   display: flex;
   justify-content: center;
 }
+
 .App {
   text-align: center;
   display: flex;
@@ -29,6 +34,9 @@ td {
   border: 1px solid black;
 }
 
+td:hover {
+  cursor: pointer;
+}
 button {
   color: white;
   background-color: darkgrey;
@@ -39,8 +47,12 @@ button {
 }
 
 button:focus {
-  border: none;
+  border: 1px solid black;
   outline: none;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .caption {

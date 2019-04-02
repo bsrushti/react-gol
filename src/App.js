@@ -57,7 +57,7 @@ class App extends Component {
   resetGrid() {
     let columns = document.getElementsByTagName("td");
     for (let i = 0; i < columns.length; i++) {
-      columns[i].style.backgroundColor = "white";
+      columns[i].style.backgroundColor = "#B3A8A6";
     }
   }
 
@@ -97,7 +97,6 @@ class App extends Component {
           <table className="gol-grid" id="gol-grid">
             <tbody>{this.createTable()}</tbody>
           </table>
-
           <button onClick={this.startGame.bind(this)}>Start Game</button>
         </div>
       </div>
