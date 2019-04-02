@@ -89,6 +89,10 @@ class App extends Component {
     setInterval(this.renderGeneration.bind(this), 500);
   }
 
+  restartGame() {
+    window.location.reload();
+  }
+
   render() {
     return (
       <div className="container">
@@ -97,7 +101,10 @@ class App extends Component {
           <table className="gol-grid" id="gol-grid">
             <tbody>{this.createTable()}</tbody>
           </table>
-          <button onClick={this.startGame.bind(this)}>Start Game</button>
+          <div className="button">
+            <button onClick={this.startGame.bind(this)}>Start Game</button>
+            <button onClick={this.restartGame.bind(this)}>Restart Game</button>
+          </div>
         </div>
       </div>
     );
