@@ -6,46 +6,100 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentGeneration: [[0, 1], [1, 1], [2, 1]],
-      bounds: { topLeft: [0, 0], bottomRight: [2, 2] },
-      grid: []
+      bounds: { topLeft: [0, 0], bottomRight: [30, 70] },
+      generation: [],
+      Grid: []
     };
   }
 
-  renderNextGeneration() {
-    let result = returnGrid(this.state.currentGeneration, this.state.bounds);
+  createInitialGrid() {
+    return new Array(30).fill(new Array(70).fill(" "));
+  }
+
+  addToGeneration(element) {
+    this.state.generation.push(element);
+  }
+
+  placeLiveCell(e) {
+    let element = e.target;
+    element.style.backgroundColor = "black";
+    this.addToGeneration(JSON.parse(element.id));
+  }
+
+  createTableColumn(id, column, index) {
+    let column_id = `[${id},${index}]`;
+    return (
+      <TableColumn
+        id={column_id}
+        key={index}
+        value={column}
+        onClick={this.placeLiveCell.bind(this)}
+      />
+    );
+  }
+
+  createTableRow(row, index) {
+    return (
+      <TableRow
+        id={index}
+        key={index}
+        value={row.map(this.createTableColumn.bind(this, index))}
+      />
+    );
+  }
+
+  createTable() {
+    let initialGrid = this.createInitialGrid();
+    let grid = initialGrid.map(this.createTableRow.bind(this));
+    return grid;
+  }
+
+  resetGrid() {
+    let columns = document.getElementsByTagName("td");
+    for (let i = 0; i < columns.length; i++) {
+      columns[i].style.backgroundColor = "white";
+    }
+  }
+
+  renderGeneration() {
+    this.resetGrid();
+    let grid = returnGrid(this.state.generation, this.state.bounds);
     let currentGeneration = nextGeneration(
-      this.state.currentGeneration,
+      this.state.generation,
       this.state.bounds
     );
-    this.setState({ grid: result, currentGeneration: currentGeneration });
+
+    this.setState({
+      grid: grid,
+      generation: currentGeneration
+    });
+
+    currentGeneration.forEach(element => {
+      let liveCell = document.getElementById(JSON.stringify(element));
+      liveCell.style.backgroundColor = "black";
+    });
     return;
   }
 
-  componentDidMount() {
-    setInterval(this.renderNextGeneration.bind(this), 500);
+  renderGrid() {
+    return this.state.grid.map(this.createTableRow.bind(this));
   }
 
-  renderGrid() {
-   return this.state.grid.map(function(result, index) {
-      return (
-        <TableRow
-          key={index}
-          value={result.map(function(cell, index) {
-            return <TableColumn key={index} value={cell} />;
-          })}
-        />
-      );
-    })
+  startGame() {
+    setInterval(this.renderGeneration.bind(this), 500);
   }
+
   render() {
     return (
-      <div className="App">
-        <table className="grid">
-          <tbody>
-            {this.renderGrid()}      
-          </tbody>
-        </table>
+      <div className="container">
+        <div className="caption">GAME OF LIFE</div>
+        <div className="App">
+          <table className="gol-grid" id="gol-grid">
+            <tbody>{this.createTable()}</tbody>
+          </table>
+
+          <button onClick={this.startGame.bind(this)}>Start Game</button>
+        </div>
       </div>
     );
   }
@@ -53,13 +107,17 @@ class App extends Component {
 
 class TableRow extends Component {
   render() {
-    return <tr>{this.props.value}</tr>;
+    return <tr id={this.props.id}>{this.props.value}</tr>;
   }
 }
 
 class TableColumn extends Component {
   render() {
-    return <td>{this.props.value}</td>;
+    return (
+      <td id={this.props.id} onClick={this.props.onClick}>
+        {this.props.value}
+      </td>
+    );
   }
 }
 export default App;
